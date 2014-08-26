@@ -49,7 +49,15 @@ class SauceConnectExtension extends Extension
             throw new \Exception("Sauce Connect Extension requires a accesskey.");
         }
 
-        $processBuilder = new ProcessBuilder([__DIR__.'/../../../bin/sauce_connect']);
+        $connect = __DIR__.'/../../../bin/sauce_connect';
+        if (!file_exists($connect)) {
+            $connect = __DIR__.'/../../../../bin/sauce_connect';
+        }
+        if (!file_exists($connect)) {
+            throw new \Exception("Couldnt find the bin directory... Make sure its in ./bin or ./vendor/bin/");
+        }
+
+        $processBuilder = new ProcessBuilder([$connect]);
         $processBuilder->addEnvironmentVariables(
             [
                 'SAUCE_USERNAME'   => $this->config['username'],
@@ -66,7 +74,7 @@ class SauceConnectExtension extends Extension
                 $buffer = explode("\n", $buffer);
                 foreach ($buffer as $line) {
                     if (strpos($line, 'Press any key to see more output') === false) {
-                        file_put_contents(codecept_output_dir().'/sauce_connect.log', $line."\n", FILE_APPEND);
+                        file_put_contents(codecept_output_dir().'sauce_connect.log', $line."\n", FILE_APPEND);
                     }
                 }
             }
@@ -98,8 +106,8 @@ class SauceConnectExtension extends Extension
             $this->process->stop();
             throw new \Exception(
                 sprintf(
-                    "Could not start tunnel. Check %s/sauce_connect.log for more information.",
-                    codecept_root_dir()
+                    "Could not start tunnel. Check %ssauce_connect.log for more information.",
+                    codecept_output_dir()
                 )
             );
         }
