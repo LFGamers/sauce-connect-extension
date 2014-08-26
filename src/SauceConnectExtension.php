@@ -49,7 +49,7 @@ class SauceConnectExtension extends Extension
             throw new \Exception("Sauce Connect Extension requires a accesskey.");
         }
 
-        $processBuilder = new ProcessBuilder(__DIR__.'/../../../bin/sauce_connect']);
+        $processBuilder = new ProcessBuilder([__DIR__.'/../../../bin/sauce_connect']);
         $processBuilder->addEnvironmentVariables(
             [
                 'SAUCE_USERNAME'   => $this->config['username'],
